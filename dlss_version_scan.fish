@@ -29,9 +29,11 @@ end
 
 # 2. Hardware Detection
 set gpu_info (nvidia-smi --query-gpu=gpu_name --format=csv,noheader 2>/dev/null)
+set driver_info (nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>/dev/null)
 set arch_detected "Unknown"
 set min_recommended "3.7.0"
 
+# Architecture logic remains the same
 if echo $gpu_info | grep -q "RTX 50"
     set arch_detected "Blackwell (RTX 50-series)"
     set min_recommended "4.5.0"
@@ -50,9 +52,10 @@ end
 set mounts (find /mnt /run/media -maxdepth 1 -mindepth 1 -type d 2>/dev/null)
 set search_paths $HOME $mounts
 
-# 4. Output Header & Legend
+# Update Section 4 (Output Header) to display the version
 echo "--------------------------------------------------------------------------------"
 echo "GPU:             $gpu_info"
+echo "Driver Version:  $driver_info"
 echo "Architecture:    $arch_detected"
 echo "Target Baseline: $min_recommended (Optimal for your hardware)"
 echo "--------------------------------------------------------------------------------"
