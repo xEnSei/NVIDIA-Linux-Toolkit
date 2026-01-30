@@ -12,8 +12,8 @@ end
 
 if test -n "$missing_tools"
     set_color red
-        echo "CRITICAL ERROR: Missing dependencies detected!"
-        echo "The following tools are required but not found in your PATH:"
+    echo "CRITICAL ERROR: Missing dependencies detected!"
+    echo "The following tools are required but not found in your PATH:"
     set_color normal
     for tool in $missing_tools
         echo "  - $tool"
@@ -23,7 +23,7 @@ if test -n "$missing_tools"
     exit 1
 else
     set_color green
-        echo "Dependency Check Passed: All tools found ($required_tools)"
+    echo "Dependency Check Passed: All tools found ($required_tools)"
     set_color normal
 end
 
@@ -56,38 +56,35 @@ echo "GPU:             $gpu_info"
 echo "Architecture:    $arch_detected"
 echo "Target Baseline: $min_recommended (Optimal for your hardware)"
 echo "--------------------------------------------------------------------------------"
-set_color green;  
-    echo "[GREEN]  = Optimal: Version meets or exceeds hardware baseline.";
-set_color yellow; 
-    echo "[YELLOW] = Suboptimal: Upgrade to $min_recommended if possible.";
-set_color red;    
-    echo "[RED]    = Error: Metadata unreadable.";
+set_color green;  echo "[GREEN]  = Optimal: Version meets or exceeds hardware baseline.";
+set_color yellow; echo "[YELLOW] = Suboptimal: Upgrade to $min_recommended if possible.";
+set_color red;    echo "[RED]    = Error: Metadata unreadable.";
 set_color normal
 echo "--------------------------------------------------------------------------------"
-set_color green;
-    echo "Home:   $HOME";
-    echo "Detected Mountpoints:"
-        for m in $mounts
-            echo "  -> $m"
-        end
-set_color normal
+echo "Home:   $HOME"
+echo "Detected Mountpoints:"
+for m in $mounts
+    echo "  -> $m"
+end
 echo "--------------------------------------------------------------------------------"
-set_color red; 
-    echo "It takes a little while, depending on the storage media you have installed. Especially with HDDs.";
+set_color red
+echo "Note: Scan time depends on your storage (HDDs may take longer)."
 set_color normal
-echo "--------------------------------------------------------------------------------"
-echo "Searching for 'nvngx_dlss.dll' files in the above locations..."
+echo "Searching for 'nvngx_dlss.dll' in above locations..."
 echo "--------------------------------------------------------------------------------"
 
 # 5. Scan & Evaluation
+set total_found 0
+set upgrades_needed 0
+
 for file in (find $search_paths -name "nvngx_dlss.dll" 2>/dev/null)
+    set total_found (math $total_found + 1)
     set raw_ver (exiftool -s3 -ProductVersion "$file" 2>/dev/null)
-    # Normalize version string (commas to dots)
     set clean_ver (echo $raw_ver | tr ',' '.')
 
     if test -n "$clean_ver"
-        # Logic check using version-aware sort
         if test "$clean_ver" = (printf "$clean_ver\n$min_recommended" | sort -V | head -n1); and test "$clean_ver" != "$min_recommended"
+            set upgrades_needed (math $upgrades_needed + 1)
             set_color yellow
             printf "%-15s" "$clean_ver"
             set_color normal
@@ -106,7 +103,16 @@ for file in (find $search_paths -name "nvngx_dlss.dll" 2>/dev/null)
     end
 end
 
+# 6. Final Summary
 echo "--------------------------------------------------------------------------------"
-set_color green;
-    echo "Scan complete."
+echo "Scan Results Summary:"
+echo "Total DLSS files found: $total_found"
+if test $upgrades_needed -gt 0
+    set_color yellow
+    echo "Upgrades recommended:  $upgrades_needed"
+else
+    set_color green
+    echo "All files are up to date!"
+end
 set_color normal
+echo "--------------------------------------------------------------------------------"
