@@ -1,5 +1,5 @@
 # NVIDIA-Linux-Toolkit
-Only the single script for now, but a few more will certainly be added.
+Only a few scripts for now, but more will certainly be added.
 
 ## Disclaimer
 
