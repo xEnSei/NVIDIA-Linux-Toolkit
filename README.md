@@ -1,5 +1,5 @@
 # NVIDIA-Linux-Toolkit
-A small collection of NVIDIA-related scripts that should save me time.
+Only the single script for now, but a few more will certainly be added.
 
 ## Disclaimer
 
