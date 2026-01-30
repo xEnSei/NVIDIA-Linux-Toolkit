@@ -12,8 +12,8 @@ end
 
 if test -n "$missing_tools"
     set_color red
-    echo "CRITICAL ERROR: Missing dependencies detected!"
-    echo "The following tools are required but not found in your PATH:"
+        echo "CRITICAL ERROR: Missing dependencies detected!"
+        echo "The following tools are required but not found in your PATH:"
     set_color normal
     for tool in $missing_tools
         echo "  - $tool"
@@ -23,7 +23,7 @@ if test -n "$missing_tools"
     exit 1
 else
     set_color green
-    echo "Dependency Check Passed: All tools found ($required_tools)"
+        echo "Dependency Check Passed: All tools found ($required_tools)"
     set_color normal
 end
 
@@ -56,15 +56,26 @@ echo "GPU:             $gpu_info"
 echo "Architecture:    $arch_detected"
 echo "Target Baseline: $min_recommended (Optimal for your hardware)"
 echo "--------------------------------------------------------------------------------"
-set_color green;  echo "[GREEN]  = Optimal: Version meets or exceeds hardware baseline.";
-set_color yellow; echo "[YELLOW] = Suboptimal: Upgrade to $min_recommended recommended.";
-set_color red;    echo "[RED]    = Error: Metadata unreadable.";
+set_color green;  
+    echo "[GREEN]  = Optimal: Version meets or exceeds hardware baseline.";
+set_color yellow; 
+    echo "[YELLOW] = Suboptimal: Upgrade to $min_recommended if possible.";
+set_color red;    
+    echo "[RED]    = Error: Metadata unreadable.";
 set_color normal
 echo "--------------------------------------------------------------------------------"
-set_color green;  echo "Home:   $HOME";
-set_color green;  echo "Mounts: $mounts";
-set_color red;    echo "It takes a little while, depending on the storage media you have installed. Especially with HDDs.";
+set_color green;
+    echo "Home:   $HOME";
+    echo "Detected Mountpoints:"
+        for m in $mounts
+            echo "  -> $m"
+        end
 set_color normal
+echo "--------------------------------------------------------------------------------"
+set_color red; 
+    echo "It takes a little while, depending on the storage media you have installed. Especially with HDDs.";
+set_color normal
+echo "--------------------------------------------------------------------------------"
 echo "Searching for 'nvngx_dlss.dll' files in the above locations..."
 echo "--------------------------------------------------------------------------------"
 
@@ -96,4 +107,6 @@ for file in (find $search_paths -name "nvngx_dlss.dll" 2>/dev/null)
 end
 
 echo "--------------------------------------------------------------------------------"
-echo "Scan complete."
+set_color green;
+    echo "Scan complete."
+set_color normal
